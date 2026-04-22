@@ -1,8 +1,17 @@
 node_modules/
 .env
 .env.local
+.env.*.local
 .next/
 dist/
 build/
 *.log
 .DS_Store
+Thumbs.db
+
+# Next.js standalone output artefacts
+frontend/.next/
+frontend/out/
+
+# Railway / Nixpacks build cache
+.nixpacks/

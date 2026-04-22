@@ -6,20 +6,41 @@ require('dotenv').config();
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  // Connection pool settings tuned for Railway's free tier
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 });
 
+// Log pool errors but don't crash — Railway will handle restarts if needed
 pool.on('error', (err) => {
-  console.error('Unexpected DB client error:', err);
-  process.exit(-1);
+  console.error('Unexpected DB pool error:', err.message);
 });
 
 const query = (text, params) => pool.query(text, params);
 
 const getClient = () => pool.connect();
 
+/**
+ * Resolve the migrations directory.
+ * Supports three layouts:
+ *   1. Railway/standalone: MIGRATIONS_DIR env var (absolute path)
+ *   2. api-service deployed with its own db/ folder: <api-service>/db/migrations
+ *   3. Local monorepo: <repo-root>/db/migrations (original layout)
+ */
+function getMigrationsDir() {
+  if (process.env.MIGRATIONS_DIR) return process.env.MIGRATIONS_DIR;
+  // When Railway sets Root Directory = api-service, __dirname = /app/src/config
+  const localPath = path.join(__dirname, '..', '..', 'db', 'migrations');
+  if (fs.existsSync(localPath)) return localPath;
+  // Local monorepo fallback: go up one more level to repo root
+  return path.join(__dirname, '..', '..', '..', 'db', 'migrations');
+}
+
 // Run migrations
 const migrate = async () => {
-  const migrationsDir = path.join(__dirname, '..', '..', '..', 'db', 'migrations');
+  const migrationsDir = getMigrationsDir();
+  console.log(`📂 Migrations directory: ${migrationsDir}`);
   const files = fs.readdirSync(migrationsDir).sort();
 
   const client = await pool.connect();

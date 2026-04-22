@@ -1,0 +1,14 @@
+# Nixpacks configuration for the api-service on Railway
+# Railway reads this when Root Directory = api-service
+
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[phases.install]
+cmds = ["npm ci --omit=dev"]
+
+[phases.build]
+cmds = []          # No build step needed for plain Node.js
+
+[start]
+cmd = "node src/index.js"

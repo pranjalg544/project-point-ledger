@@ -14,8 +14,19 @@ const app = express();
 
 // ─── SECURITY MIDDLEWARE ─────────────────────────────────────
 app.use(helmet());
+const allowedOrigins = [
+  process.env.FRONTEND_URL || 'http://localhost:3000',
+  'http://localhost:3000',
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow no-origin (mobile / curl / server-to-server) and Railway domains
+    if (!origin || allowedOrigins.includes(origin) || /\.up\.railway\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true,
 }));
 
@@ -75,8 +86,9 @@ const PORT = process.env.PORT || 5000;
 const start = async () => {
   try {
     await migrate();
-    app.listen(PORT, () => {
-      console.log(`✅ Point Ledger API running on http://localhost:${PORT}`);
+    // Bind to 0.0.0.0 — required by Railway (and most PaaS) to accept external traffic
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`✅ Point Ledger API running on 0.0.0.0:${PORT}`);
       startCouponService(); // Start background real-time coupon generation
     });
   } catch (err) {
