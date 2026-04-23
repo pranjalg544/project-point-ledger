@@ -7,7 +7,7 @@ import { Plus, RefreshCw, Trash2, X, Shield, Lock, CreditCard } from 'lucide-rea
 import { format } from 'date-fns';
 import { getBankStyle, NETWORK_COLORS } from '@/lib/themes';
 import BrandedCard from '@/components/ui/BrandedCard';
-import { BankLogo } from '@/components/ui/LogoComponents';
+import { BankLogo } from '@/components/ui/BrandedCard';
 
 const BANKS = ['HDFC Bank','SBI','ICICI Bank','Axis Bank','Kotak Mahindra','Yes Bank','IDFC First','IndusInd Bank','Punjab National Bank','Bank of Baroda','Canara Bank','Union Bank','Federal Bank','RBL Bank','Standard Chartered','HSBC India','Citibank India','American Express','Other'];
 const NETWORKS = ['Visa','Mastercard','Amex','RuPay','Diners'];

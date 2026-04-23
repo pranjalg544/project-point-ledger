@@ -13,7 +13,7 @@ interface Props {
   compact?: boolean; // small inline version for dashboard/profile
 }
 
-function BankLogo({ url, name, size = 32 }: { url: string; name: string; size?: number }) {
+export function BankLogo({ url, name, size = 32 }: { url: string; name: string; size?: number }) {
   const [err, setErr] = useState(false);
   if (!url || err) {
     return (
