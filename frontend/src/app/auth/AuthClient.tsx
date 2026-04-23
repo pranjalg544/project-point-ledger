@@ -57,7 +57,7 @@ export default function AuthClient() {
   };
 
   const handleGoogleLogin = () => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://https://project-point-ledger-production.up.railway.app//api';
     window.location.href = `${apiUrl}/auth/google`;
   };
 
