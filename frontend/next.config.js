@@ -20,7 +20,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://https://project-point-ledger-production.up.railway.app//api'}/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_API_URL || 'https://project-point-ledger-production.up.railway.app//api'}/:path*`,
       },
     ];
   },
